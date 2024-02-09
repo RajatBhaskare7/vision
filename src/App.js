@@ -49,7 +49,6 @@ import routes from "routes";
 import { useVisionUIController, setMiniSidenav, setOpenConfigurator } from "context";
 
 export default function App() {
-  console.log("hello")
   const [controller, dispatch] = useVisionUIController();
   const { miniSidenav, direction, layout, openConfigurator, sidenavColor } = controller;
   const [onMouseEnter, setOnMouseEnter] = useState(false);
@@ -133,9 +132,53 @@ export default function App() {
     </VuiBox>
   );
 
-  return (
-    <div>
-      hello
-    </div>
-  )
+  return direction === "rtl" ? (
+    <CacheProvider value={rtlCache}>
+      <ThemeProvider theme={themeRTL}>
+        <CssBaseline />
+        {layout === "dashboard" && (
+          <>
+            <Sidenav
+              color={sidenavColor}
+              brand=""
+              brandName="VISION UI FREE"
+              routes={routes}
+              onMouseEnter={handleOnMouseEnter}
+              onMouseLeave={handleOnMouseLeave}
+            />
+            <Configurator />
+            {configsButton}
+          </>
+        )}
+        {layout === "vr" && <Configurator />}
+        <Switch>
+          {getRoutes(routes)}
+          <Redirect from="*" to="/dashboard" />
+        </Switch>
+      </ThemeProvider>
+    </CacheProvider>
+  ) : (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      {layout === "dashboard" && (
+        <>
+          <Sidenav
+            color={sidenavColor}
+            brand=""
+            brandName="VISION UI FREE"
+            routes={routes}
+            onMouseEnter={handleOnMouseEnter}
+            onMouseLeave={handleOnMouseLeave}
+          />
+          <Configurator />
+          {configsButton}
+        </>
+      )}
+      {layout === "vr" && <Configurator />}
+      <Switch>
+        {getRoutes(routes)}
+        <Redirect from="*" to="/dashboard" />
+      </Switch>
+    </ThemeProvider>
+  );
 }
